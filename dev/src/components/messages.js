@@ -1,18 +1,9 @@
-import React, {
-  Component
-} from "react";
-import {
-  withStyles
-} from "@material-ui/core/styles";
+import React, { Component } from "react";
+import { withStyles } from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import io from "socket.io-client";
-import Fade from "@material-ui/core/Fade";
-import {
-  connect
-} from "react-redux";
-import {
-  addTweet
-} from "../actions/actions";
+import { connect } from "react-redux";
+import { addTweet } from "../actions/actions";
 
 const mapStateToProps = state => {
   return {
@@ -65,28 +56,11 @@ class ConnectedSidebar extends Component {
   }
 
   buildSidebar() {
-    const {
-      classes
-    } = this.props;
-    return this.state.tweets.map(tweet => ( <
-      Fade in = {
-        true
-      } >
-      <
-      div { ...this.props
-      } >
-      <
-      Paper className = {
-        classes.paper
-      }
-      elevation = {
-        8
-      } > {
-        tweet
-      } <
-      /Paper> < /
-      div > <
-      /Fade>
+    const { classes } = this.props;
+    return this.state.tweets.map(tweet => (
+      <Paper className={classes.paper} elevation={8}>
+        {tweet}
+      </Paper>
     ));
   }
 
@@ -108,11 +82,9 @@ class ConnectedSidebar extends Component {
   }
 
   render() {
-    const {
-      classes
-    } = this.props;
+    const { classes } = this.props;
 
-    return <this.buildSidebar / > ;
+    return <this.buildSidebar />;
   }
 }
 

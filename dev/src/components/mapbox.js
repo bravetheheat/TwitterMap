@@ -2,14 +2,14 @@ import ReactMapboxGl, { Layer, Feature } from "react-mapbox-gl";
 
 import React, { Component } from "react";
 import { withStyles } from "@material-ui/core/styles";
-import Paper from "@material-ui/core/Paper";
-import { Grid } from "@material-ui/core";
-import io from "socket.io-client";
+
 import mapboxgl from "mapbox-gl";
 import { connect } from "react-redux";
 
 const mapStateToProps = state => {
-  return { tweets: state.tweets };
+  return {
+    tweets: state.tweets
+  };
 };
 
 const Map = ReactMapboxGl({
@@ -56,7 +56,10 @@ class ConnectedMapbox extends Component {
     return (
       <Map
         style="mapbox://styles/mapbox/streets-v10"
-        containerStyle={{ height: "100%", width: "100%" }}
+        containerStyle={{
+          height: "100%",
+          width: "100%"
+        }}
         onStyleLoad={el => (this.map = el)}
         {...this.state.map}
       />
