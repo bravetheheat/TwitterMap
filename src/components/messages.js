@@ -1,10 +1,18 @@
-import React, { Component } from "react";
-import { withStyles } from "@material-ui/core/styles";
+import React, {
+  Component
+} from "react";
+import {
+  withStyles
+} from "@material-ui/core/styles";
 import Paper from "@material-ui/core/Paper";
 import io from "socket.io-client";
 import Fade from "@material-ui/core/Fade";
-import { connect } from "react-redux";
-import { addTweet } from "../actions/actions";
+import {
+  connect
+} from "react-redux";
+import {
+  addTweet
+} from "../actions/actions";
 
 const mapStateToProps = state => {
   return {
@@ -36,7 +44,7 @@ class ConnectedSidebar extends Component {
     };
     this.buildSidebar = this.buildSidebar.bind(this);
     this.updateSidebar = this.updateSidebar.bind(this);
-    this.socket = io("localhost:5000");
+    this.socket = io("https://twittermap-backend.herokuapp.com/");
     this.socket.on("tweet", data => {
       if (data.text != null) {
         this.updateSidebar(data.text);
@@ -49,21 +57,36 @@ class ConnectedSidebar extends Component {
   ComponentDidMount() {}
   componentWillReceiveProps(new_props) {
     if (new_props.keyword !== "" && new_props.keyword !== this.state.keyword) {
-      this.setState({ keyword: new_props.keyword });
+      this.setState({
+        keyword: new_props.keyword
+      });
       this.socket.emit("keyword", new_props.keyword);
     }
   }
 
   buildSidebar() {
-    const { classes } = this.props;
-    return this.state.tweets.map(tweet => (
-      <Fade in={true}>
-        <div {...this.props}>
-          <Paper className={classes.paper} elevation={8}>
-            {tweet}
-          </Paper>
-        </div>
-      </Fade>
+    const {
+      classes
+    } = this.props;
+    return this.state.tweets.map(tweet => ( <
+      Fade in = {
+        true
+      } >
+      <
+      div { ...this.props
+      } >
+      <
+      Paper className = {
+        classes.paper
+      }
+      elevation = {
+        8
+      } > {
+        tweet
+      } <
+      /Paper> < /
+      div > <
+      /Fade>
     ));
   }
 
@@ -73,17 +96,23 @@ class ConnectedSidebar extends Component {
     if (tweet.length > 5) {
       tweet.shift();
       tweet.push(new_tweet);
-      this.setState({ tweets: tweet });
+      this.setState({
+        tweets: tweet
+      });
     } else {
       tweet.push(new_tweet);
-      this.setState({ tweets: tweet });
+      this.setState({
+        tweets: tweet
+      });
     }
   }
 
   render() {
-    const { classes } = this.props;
+    const {
+      classes
+    } = this.props;
 
-    return <this.buildSidebar />;
+    return <this.buildSidebar / > ;
   }
 }
 
