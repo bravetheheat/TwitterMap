@@ -14,6 +14,11 @@ import Typography from "@material-ui/core/Typography";
 import Sidebar from "./components/messages.js";
 import { connect } from "react-redux";
 import { addKeyword } from "./actions/actions";
+import LinearProgress from "@material-ui/core/LinearProgress";
+import Button from "@material-ui/core/Button";
+import CircularProgress from "@material-ui/core/CircularProgress";
+import green from "@material-ui/core/colors/green";
+import classNames from "classnames";
 
 const mapDispatchToProps = dispatch => {
   return {
@@ -41,9 +46,14 @@ const theme = createMuiTheme({
 
 const styles = {
   textField: {
-    width: "100%",
+    width: "70%",
     autoFocus: true,
     fontSize: 20
+  },
+
+  title: {
+    marginBottom: theme.spacing.unit * 4,
+    marginRight: theme.spacing.unit * 4
   },
 
   header: {
@@ -57,7 +67,23 @@ const styles = {
     width: "60vw"
   },
 
-  body: {}
+  body: {},
+
+  buttonProgress: {
+    color: green[500],
+    position: "absolute",
+    top: "50%",
+    left: "50%",
+    marginTop: -12,
+    marginLeft: -12
+  },
+
+  buttonSucess: {
+    backgroundColor: green[500],
+    "&:hover": {
+      backgroundColor: green[700]
+    }
+  }
 };
 
 class ConnectedApp extends Component {
@@ -65,19 +91,57 @@ class ConnectedApp extends Component {
     super(props);
     this.state = {
       triggered: false,
-      keyword: ""
+      keyword: "",
+      submit: {
+        loading: false,
+        success: false
+      }
     };
 
     this._handleKeyPress = this._handleKeyPress.bind(this);
     this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.buttonChange = this.buttonChange.bind(this);
   }
 
-  handleSubmit(event) {}
+  handleSubmit() {
+    if (this.state.keyword !== "") {
+      this.props.addKeyword(this.state.keyword);
+      this.setState({ triggered: true });
+      console.log(`Entered keyword ${this.state.keyword}`);
+      this.buttonChange();
+    }
+  }
+
+  buttonChange() {
+    if (!this.state.submit.loading) {
+      this.setState(
+        {
+          submit: {
+            success: false,
+            loading: true
+          }
+        },
+        () => {
+          this.timer = setTimeout(() => {
+            this.setState({
+              submit: {
+                loading: false,
+                success: true
+              }
+            });
+          }, 1000);
+        }
+      );
+    }
+  }
 
   _handleKeyPress(e) {
-    if (e.key === "Enter") {
+    if (e.key === "Enter" && this.state.keyword !== "") {
       this.props.addKeyword(this.state.keyword);
+      this.setState({ triggered: true });
       console.log(`Entered keyword ${this.state.keyword}`);
+      this.buttonChange();
     }
   }
 
@@ -87,6 +151,10 @@ class ConnectedApp extends Component {
 
   render() {
     const { classes } = this.props;
+    const { loading, success } = this.state.submit;
+    const buttonClassname = classNames({
+      [classes.buttonSuccess]: success
+    });
     return (
       <MuiThemeProvider theme={theme}>
         <CssBaseline />
@@ -99,18 +167,47 @@ class ConnectedApp extends Component {
             alignItems="flex-end"
           >
             <Grid item xs={2}>
-              <Typography variant="display3" gutterBottom>
+              <Typography variant="display2" className={classes.title}>
                 TwitterMap
               </Typography>
             </Grid>
             <Grid item xs={8}>
               <Paper className={classes.header}>
-                <TextField
-                  className={classes.textField}
-                  label="Keyword"
-                  onKeyPress={this._handleKeyPress}
-                  onChange={this.handleChange}
-                />
+                <Grid
+                  container
+                  direction="row"
+                  type="flex"
+                  justify="space-between"
+                  alignItems="center"
+                  spacing={0}
+                >
+                  <Grid item xs={10}>
+                    <TextField
+                      className={classes.textField}
+                      label="Keyword"
+                      onKeyPress={this._handleKeyPress}
+                      onChange={this.handleChange}
+                      disabled={this.state.triggered}
+                    />
+                  </Grid>
+                  <Grid item xs={2}>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      disabled={loading || success}
+                      className={buttonClassname}
+                      onClick={this.handleSubmit}
+                    >
+                      {success ? "Submitted" : "Submit"}
+                      {loading && (
+                        <CircularProgress
+                          size={24}
+                          className={classes.buttonProgress}
+                        />
+                      )}
+                    </Button>
+                  </Grid>
+                </Grid>
               </Paper>
             </Grid>
           </Grid>
